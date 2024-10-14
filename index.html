@@ -253,12 +253,47 @@
 
       // money formatter
       function moneyFormatter(num) {
-        if (num !== undefined && num !== null && num !== "") {
-          return parseFloat(num)
-            .toFixed(2)
-            .replace(/\d(?=(\d{3})+\.)/g, "$&,");
+        if (num === undefined || num === null || num === "") {
+          return num;
         }
-        return num;
+
+        const _number = parseFloat(num);
+
+        // Handle exponential notation
+        if (num.toString().includes("e")) {
+          return _number.toFixed(7);
+        }
+
+        // Split the number into integer and decimal parts
+        const parts = _number.toString().split(".");
+        const integerPart = parts[0];
+        const decimalPart = parts[1] || "";
+
+        // Format the integer part with commas
+        const formattedIntegerPart = integerPart.replace(
+          /\B(?=(\d{3})+(?!\d))/g,
+          ","
+        );
+
+        // Determine how to handle the decimal part
+        let formattedDecimalPart = "";
+        if (decimalPart) {
+          if (decimalPart.length <= 2) {
+            // If there are 1 or 2 decimal places, keep them as is
+            formattedDecimalPart = "." + decimalPart.padEnd(2, "0");
+          } else if (decimalPart.slice(2).replace(/0+$/, "").length > 0) {
+            // If there are non-zero digits after the second decimal place, keep all decimal places
+            formattedDecimalPart = "." + decimalPart;
+          } else {
+            // Otherwise, keep only two decimal places
+            formattedDecimalPart = "." + decimalPart.slice(0, 2);
+          }
+        } else {
+          // If there's no decimal part, add .00
+          formattedDecimalPart = ".00";
+        }
+
+        return formattedIntegerPart + formattedDecimalPart;
       }
     </script>
   </body>
