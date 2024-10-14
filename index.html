@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto Data Portal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        font-size: 24px;
+      }
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .refresh-button {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .refresh-button:hover {
+        background-color: #45a049;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        color: #333;
+      }
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+      .positive {
+        color: green;
+      }
+      .negative {
+        color: red;
+      }
+      .crypto-icon {
+        width: 24px;
+        height: 24px;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+
+      @media screen and (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+        h1 {
+          font-size: 20px;
+        }
+        .header-container {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .refresh-button {
+          width: 100%;
+          margin: 10px 0;
+        }
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+        thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+        tr {
+          margin-bottom: 15px;
+          border: 1px solid #ccc;
+        }
+        td {
+          border: none;
+          position: relative;
+          padding-left: 50%;
+        }
+        td:before {
+          position: absolute;
+          top: 6px;
+          left: 6px;
+          width: 45%;
+          padding-right: 10px;
+          white-space: nowrap;
+          content: attr(data-label);
+          font-weight: bold;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-container">
+      <h1>Crypto Data Portal</h1>
+      <button class="refresh-button" onclick="fetchCryptoData()">
+        Refresh
+      </button>
+    </div>
+    <table id="cryptoTable">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Symbol</th>
+          <th>Lowest Price</th>
+          <th>Highest Price</th>
+          <th>Current Price</th>
+          <th>Volume</th>
+          <th>Price Change</th>
+          <th>Price Change %</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody id="cryptoData"></tbody>
+    </table>
+
+    <script>
+      const symbols = [
+        "BTCUSDT",
+        "ETHUSDT",
+        "BNBUSDT",
+        "ADAUSDT",
+        "SOLUSDT",
+        "XRPUSDT",
+        "DOTUSDT",
+        "DOGEUSDT",
+        "SHIBUSDT",
+        "LTCUSDT",
+      ];
+
+      const coinGeckoIds = {
+        BTCUSDT: "bitcoin",
+        ETHUSDT: "ethereum",
+        BNBUSDT: "binancecoin",
+        ADAUSDT: "cardano",
+        SOLUSDT: "solana",
+        XRPUSDT: "ripple",
+        DOTUSDT: "polkadot",
+        DOGEUSDT: "dogecoin",
+        SHIBUSDT: "shiba-inu",
+        LTCUSDT: "litecoin",
+      };
+
+      async function fetchCryptoData() {
+        const tableBody = document.getElementById("cryptoData");
+        tableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+
+        try {
+          const [binanceData, coinGeckoData] = await Promise.all([
+            Promise.all(
+              symbols.map((symbol) =>
+                fetch(
+                  `https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`
+                ).then((response) => response.json())
+              )
+            ),
+            fetch(
+              "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=" +
+                Object.values(coinGeckoIds).join(",")
+            ).then((response) => response.json()),
+          ]);
+
+          const iconMap = new Map(
+            coinGeckoData.map((coin) => [
+              coin.symbol.toUpperCase() + "USDT",
+              coin.image,
+            ])
+          );
+
+          tableBody.innerHTML = "";
+          binanceData.forEach((crypto, index) => {
+            const iconUrl = iconMap.get(crypto.symbol) || "";
+
+            const row = `
+                        <tr>
+                            <td>
+                                ${index++ + 1}.
+                                </td>
+                            <td>
+                                <img src="${iconUrl}" alt="${
+              crypto.symbol
+            }" class="crypto-icon">
+                                ${crypto.symbol}
+                            </td>
+                            <td>${moneyFormatter(crypto.lowPrice)}</td>
+                            <td>${moneyFormatter(crypto.highPrice)}</td>
+                            <td>${moneyFormatter(crypto.lastPrice)}</td>
+                            <td>${moneyFormatter(crypto.volume)}</td>
+                            <td class="${
+                              parseFloat(crypto.priceChange) >= 0
+                                ? "positive"
+                                : "negative"
+                            }">
+                                ${moneyFormatter(crypto.priceChange)}
+                            </td>
+                            <td class="${
+                              parseFloat(crypto.priceChangePercent) >= 0
+                                ? "positive"
+                                : "negative"
+                            }">
+                                ${moneyFormatter(crypto.priceChangePercent)}%
+                            </td>
+                            <td>${new Date(
+                              crypto.closeTime
+                            ).toLocaleString()}</td>
+                        </tr>
+                    `;
+            tableBody.innerHTML += row;
+          });
+        } catch (error) {
+          console.error("Error:", error);
+          tableBody.innerHTML =
+            '<tr><td colspan="8">Error fetching data. Please try again later.</td></tr>';
+        }
+      }
+
+      // Fetch data initially and then every 60 seconds
+      fetchCryptoData();
+      setInterval(fetchCryptoData, 60000);
+
+      // money formatter
+      function moneyFormatter(num) {
+        if (num !== undefined && num !== null && num !== "") {
+          return parseFloat(num)
+            .toFixed(2)
+            .replace(/\d(?=(\d{3})+\.)/g, "$&,");
+        }
+        return num;
+      }
+    </script>
+  </body>
+</html>
