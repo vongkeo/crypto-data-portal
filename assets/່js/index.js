@@ -171,3 +171,32 @@ function moneyFormatter(num) {
 
   return formattedIntegerPart + formattedDecimalPart;
 }
+
+function calculateProfit() {
+  // cryptoSelect
+  // buyPrice
+  // quantity
+  // sellPrice
+  const cryptoSelect = document.getElementById("cryptoSelect");
+  const buyPrice = document.getElementById("buyPrice");
+  const quantity = document.getElementById("quantity");
+  const sellPrice = document.getElementById("sellPrice");
+  console.log("cryptoSelect", cryptoSelect.value);
+  console.log("buyPrice", buyPrice.value);
+  console.log("quantity", quantity.value);
+  console.log("sellPrice", sellPrice.value);
+}
+
+function getCurrentPrice() {
+  const cryptoSelect = document.getElementById("cryptoSelect");
+  // fetch current price of selected crypto
+  fetch(
+    `https://api.binance.com/api/v3/ticker/24hr?symbol=${cryptoSelect.value}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("current price", data.lastPrice);
+      // set sellPrice value to current price
+      document.getElementById("sellPrice").value = data.lastPrice;
+    });
+}
