@@ -1,12 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #f0f0f0;
+  background-color: #181a20;
+  font-family: "Roboto", sans-serif;
 }
 h1 {
   text-align: center;
-  color: #333;
   font-size: 24px;
 }
 .header-container {
@@ -17,9 +19,9 @@ h1 {
   flex-wrap: wrap;
 }
 .refresh-button {
-  background-color: #4caf50;
+  background-color: #fcd536;
   border: none;
-  color: white;
+  color: black;
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
@@ -31,33 +33,30 @@ h1 {
   transition: background-color 0.3s;
 }
 .refresh-button:hover {
-  background-color: #45a049;
+  background-color: #fcd536;
 }
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 th,
 td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 0.5px solid #2c2f3e;
 }
 th {
-  background-color: #f2f2f2;
   font-weight: bold;
-  color: #333;
 }
 tr:hover {
-  background-color: #f5f5f5;
+  background-color: #2c2f3e;
 }
 .positive {
-  color: green;
+  color: #0ecb81;
 }
 .negative {
-  color: red;
+  color: #f6465d;
 }
 .crypto-icon {
   width: 24px;
@@ -113,4 +112,12 @@ tr:hover {
     content: attr(data-label);
     font-weight: bold;
   }
+}
+
+/* text color */
+h1,
+th,
+td,
+#countdown {
+  color: #eaecef;
 }
