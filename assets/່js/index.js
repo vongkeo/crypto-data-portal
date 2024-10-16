@@ -24,6 +24,9 @@ const coinGeckoIds = {
   LTCUSDT: "litecoin",
 };
 
+// tradingview symbols
+// https://www.tradingview.com/symbols/ETHUSD/?exchange=CRYPTO
+
 async function fetchCryptoData() {
   const tableBody = document.getElementById("cryptoData");
   tableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
@@ -88,6 +91,11 @@ async function fetchCryptoData() {
                           ${moneyFormatter(crypto.priceChangePercent)}%
                       </td>
                       <td>${new Date(crypto.closeTime).toLocaleString()}</td>
+                      <td>
+                        <a href="https://www.tradingview.com/symbols/${
+                          crypto.symbol
+                        }?exchange=CRYPTO" target="_blank">TradingView</a>
+                        </td>
                   </tr>
               `;
       tableBody.innerHTML += row;
@@ -189,6 +197,7 @@ function calculateProfit() {
 
 function getCurrentPrice() {
   const cryptoSelect = document.getElementById("cryptoSelect");
+  console.log("cryptoSelect", cryptoSelect.value);
   // fetch current price of selected crypto
   fetch(
     `https://api.binance.com/api/v3/ticker/24hr?symbol=${cryptoSelect.value}`

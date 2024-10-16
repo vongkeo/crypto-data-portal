@@ -36,6 +36,7 @@
                 <th>Price Change</th>
                 <th>Price Change %</th>
                 <th>Last Updated</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="cryptoData"></tbody>
@@ -53,21 +54,22 @@
                 <label for="cryptoSelect" class="form-label"
                   >Select Crypto</label
                 >
+
                 <select
                   id="cryptoSelect"
                   name="cryptoSelect"
                   class="form-select"
                 >
-                  <option value="BTC">BTC</option>
-                  <option value="ETH">ETH</option>
-                  <option value="BNB">BNB</option>
-                  <option value="ADA">ADA</option>
-                  <option value="DOGE">DOGE</option>
-                  <option value="XRP">XRP</option>
-                  <option value="DOT">DOT</option>
-                  <option value="UNI">UNI</option>
-                  <option value="LTC">LTC</option>
-                  <option value="LINK">LINK</option>
+                  <option value="BTCUSDT">BTC</option>
+                  <option value="ETHUSDT">ETH</option>
+                  <option value="BNBUSDT">BNB</option>
+                  <option value="ADAUSDT">ADA</option>
+                  <option value="SOLUSDT">SOL</option>
+                  <option value="LTCUSDT">LTC</option>
+                  <option value="DOTUSDT">DOT</option>
+                  <option value="XRPUSDT">XRP</option>
+                  <option value="DOGEUSDT">DOGE</option>
+                  <option value="SHIBUSDT">SHIB</option>
                 </select>
               </div>
               <div class="col-12">
@@ -110,9 +112,8 @@
         </div>
 
         <div class="col-5">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-yellow"> Summary </span>
-          </h4>
+          <label for="buyPrice" class="form-label">Summary</label>
+
           <ul class="list-group mb-3">
             <li class="list-group-item d-flex justify-content-between lh-sm">
               <div>
